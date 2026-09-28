@@ -1,0 +1,19 @@
+[project]
+name = "sama-abm"
+version = "0.1.0"
+description = "Agent-based model of rooftop solar prosumers on one urban Indian distribution feeder"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "pyyaml>=6"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["sama_abm", "sama_abm.clearing"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

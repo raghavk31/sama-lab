@@ -1,0 +1,22 @@
+.controls {
+  position: sticky; top: 0; z-index: 5;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  padding: 12px 0 10px; margin: 36px 0 8px;
+}
+.controls__sentence { margin: 0 0 8px; font-size: 15px; color: var(--ink-soft); }
+.controls__row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.controls label { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0 8px; }
+.controls .label { grid-column: 1 / -1; }
+.controls output { font: 500 14px/1 var(--sans); font-variant-numeric: tabular-nums; color: var(--ink); min-width: 3.4em; text-align: right; }
+.controls input[type="range"] { width: 100%; margin: 6px 0; accent-color: var(--s-p2p); }
+.chart.sm { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 600px) {
+  .controls { padding: 8px 0 6px; }
+  .controls__sentence { display: none; }
+  .controls__row { gap: 10px; }
+  .controls .label { font-size: 10px; }
+  .controls output { font-size: 12px; min-width: 0; }
+  .chart.sm { grid-template-columns: 1fr; }
+}

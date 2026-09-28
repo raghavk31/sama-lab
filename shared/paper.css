@@ -1,0 +1,78 @@
+/* The paper the Sama instruments are printed on. Tokens follow raghavkohli.xyz
+   (src/assets/css/main.css) so a page embedded there reads as part of it. */
+:root {
+  --paper: #FAFAF8;
+  --paper-2: #F4F3EE;
+  --ink: #1C1B18;
+  --ink-soft: #57564F;
+  --mute: #6B6A64;
+  --line: #C2C0B7;
+  --grid: #E4E2DB;
+  --accent: #2E3A57;
+  /* chart series, validated (dataviz validate_palette.js, light, on --paper) */
+  --s-discom: #3E62B3;   /* the utility; regime A */
+  --s-p2p: #B57C0E;      /* the neighbour; regime B */
+  --s-curtail: #A33F4F;
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "Geist", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --measure: 720px;
+  --gutter: 16px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #1A1917; --paper-2: #23221F; --ink: #ECEAE3; --ink-soft: #BDBBB2; --mute: #9A988F;
+    --line: #4A4843; --grid: #2E2D29; --accent: #9DB0D8;
+    --s-discom: #5F84D6; --s-p2p: #C08A1E; --s-curtail: #C25566;   /* validated on #1A1917 */
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1A1917; --paper-2: #23221F; --ink: #ECEAE3; --ink-soft: #BDBBB2; --mute: #9A988F;
+  --line: #4A4843; --grid: #2E2D29; --accent: #9DB0D8;
+  --s-discom: #5F84D6; --s-p2p: #C08A1E; --s-curtail: #C25566;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 17px/1.6 var(--sans);
+  font-feature-settings: "ss01";
+}
+.page { max-width: calc(var(--measure) + 2 * var(--gutter)); margin: 0 auto; padding: 72px var(--gutter) 96px; }
+.embedded .page { padding-top: 24px; padding-bottom: 40px; }
+
+.eyebrow, .label, figcaption .n, .meta { font: 400 12px/1.4 var(--mono); letter-spacing: .02em; color: var(--mute); text-transform: lowercase; }
+h1 { font: 400 clamp(32px, 6vw, 48px)/1.08 var(--serif); letter-spacing: -.015em; margin: 12px 0 20px; }
+h2 { font: 400 clamp(22px, 3.6vw, 28px)/1.2 var(--serif); margin: 64px 0 12px; }
+h2 .n { font: 400 13px/1 var(--mono); color: var(--mute); margin-right: 10px; vertical-align: 4px; }
+p { margin: 0 0 1em; color: var(--ink-soft); }
+p.deck { font-size: 20px; line-height: 1.5; color: var(--ink-soft); }
+p.answer { font: 400 21px/1.5 var(--serif); color: var(--ink); border-left: 2px solid var(--s-p2p); padding-left: 16px; margin: 28px 0; }
+strong { color: var(--ink); font-weight: 500; }
+a { color: var(--accent); text-underline-offset: 3px; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 56px 0; }
+
+figure { margin: 28px 0 8px; }
+figcaption { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--mute); }
+.finding { font: 500 16px/1.45 var(--sans); color: var(--ink); margin: 18px 0 6px; }
+.chart { width: 100%; }
+.chart svg { display: block; max-width: 100%; height: auto; overflow: visible; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 400 13px/1.4 var(--sans); color: var(--ink-soft); margin: 8px 0 4px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.legend i.line { height: 2px; width: 16px; vertical-align: 3px; border-radius: 1px; }
+
+details { margin: 8px 0 0; font-size: 14px; color: var(--mute); }
+details summary { cursor: pointer; font: 400 12px/1.4 var(--mono); }
+table { border-collapse: collapse; width: 100%; margin-top: 8px; font: 400 13px/1.4 var(--sans); font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 4px 8px; border-bottom: 1px solid var(--grid); color: var(--ink-soft); }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--ink); }
+.scroll-x { overflow-x: auto; }
+
+.note { font-size: 15px; background: var(--paper-2); padding: 16px 18px; border-radius: 4px; }
+.note p { margin-bottom: .6em; }
+.note p:last-child { margin-bottom: 0; }

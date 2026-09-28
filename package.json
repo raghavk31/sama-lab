@@ -1,0 +1,18 @@
+{
+  "name": "sama-lab",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Two instruments for Sama: a feeder ABM of rooftop solar prosumers, and a map of grid observability",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.3.1"
+  },
+  "dependencies": {
+    "@observablehq/plot": "^0.6.17"
+  }
+}

@@ -1,0 +1,74 @@
+# Sama feeder ABM — every parameter the model reads. Nothing numeric is hardcoded in sama_abm/.
+# Lines marked PLACEHOLDER are behavioural guesses awaiting fieldwork; lines marked ASSUMPTION are
+# engineering choices that a real feeder would replace. See README.md, "What is assumed".
+
+seed: 20260929
+
+feeder:
+  households: 300              # 200–500 supported
+  # Reverse power flow the distribution transformer is allowed to carry before inverters are
+  # curtailed. ASSUMPTION: a 400 kVA DT at unity power factor, limited to 60% of rating.
+  dt_rating_kva: 400
+  reverse_flow_limit: 0.60
+
+time:
+  horizon: week                # week | year
+  week_month: 4                # which month the representative week stands for (4 = April)
+  start_weekday: 0             # 0 = Monday
+
+tariff:
+  fit: 2.50                    # Rs/kWh, feed-in tariff paid by the DISCOM for exported surplus
+  retail_low: 6.40             # Rs/kWh, retail band a household pays for imports
+  retail_high: 6.80
+
+population:
+  pv_penetration: 0.30         # share of households with rooftop PV
+  pv_kw:                       # right-skewed: lognormal, clipped to the rooftop range
+    median: 3.0
+    sigma: 0.55
+    min: 1.0
+    max: 10.0
+  archetypes:                  # weight on the feeder; median monthly consumption (kWh); spread
+    daytime_absent:  { weight: 0.45, monthly_kwh: 240, sigma: 0.35 }
+    daytime_present: { weight: 0.40, monthly_kwh: 300, sigma: 0.35 }
+    home_business:   { weight: 0.15, monthly_kwh: 420, sigma: 0.40 }
+  hourly_noise: 0.15           # lognormal sigma on each household-hour, around its archetype shape
+
+generation:
+  # kWh per kWp per day on a clear day in the reference month, before the monthly multiplier.
+  # ASSUMPTION, in the range usually quoted for south and north Indian cities (~4–5).
+  specific_yield: 4.6
+  # Month multipliers on the specific yield, Jan..Dec. ASSUMPTION: a generic Indian curve —
+  # strong pre-monsoon, a monsoon trough, a clear winter.
+  monthly: [0.95, 1.02, 1.08, 1.10, 1.05, 0.82, 0.70, 0.72, 0.85, 0.95, 0.94, 0.92]
+  # Day-to-day cloud factor, Beta distributed (mean a/(a+b)); one draw per day for the feeder.
+  cloud: { a: 9.0, b: 1.5 }
+
+behaviour:
+  active_share: 0.50           # share of households that trade actively in regime B
+  # How far a household moves off the safe option. 0 = asks the ceiling / bids the floor and
+  # rarely trades; 1 = prices to clear. PLACEHOLDER pending fieldwork.
+  aggressiveness: { a: 2.0, b: 2.0 }
+  # Share of an active household's daily consumption it will move into hours the feeder is
+  # exporting, once it can see them, scaled by its aggressiveness. PLACEHOLDER.
+  flex_share: 0.10
+
+market:
+  clearing: uniform            # name in sama_abm.clearing.REGISTRY
+  ceiling: 6.40                # Rs/kWh, highest price the P2P market may clear at
+
+profiles:
+  # Each name resolves to data/measured/<name>.csv if it exists, else data/profiles/<name>.csv.
+  load:
+    daytime_absent: load_daytime_absent
+    daytime_present: load_daytime_present
+    home_business: load_home_business
+  irradiance: irradiance
+
+sweep:
+  pv_penetration: [0.10, 0.20, 0.30, 0.45, 0.60]
+  ceiling: [4.00, 5.00, 5.80, 6.40, 6.80]
+  active_share: [0.0, 0.25, 0.50, 0.75, 1.0]
+  replicates: 5
+  default: { pv_penetration: 0.30, ceiling: 6.40, active_share: 0.50 }
+  out: src/results.json        # relative to abm/
