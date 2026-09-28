@@ -32,16 +32,15 @@ The model and its sweep are documented in [abm/README.md](abm/README.md).
 
 ## Embedding
 
-The build uses relative paths, so `dist/` works at any path. To embed a page in another static
-site:
+ also writes the ABM essay as one script and one stylesheet with stable names, in
+ (published at ). A host page supplies its own
+title and loads them:
 
-```html
-<iframe src="https://raghavk31.github.io/sama-lab/abm/" style="width:100%;border:0" id="sama-abm" title="One feeder, two regimes"></iframe>
-<script>
-  addEventListener("message", (e) => {
-    if (e.data && e.data.type === "sama-lab:height") document.getElementById("sama-abm").style.height = e.data.height + "px";
-  });
-</script>
-```
+\
+The styles are scoped to  and take the host's colour tokens (, , ...)
+where it has them.  names the host's sticky header, so the settings bar docks below it.
+This is how [raghavkohli.xyz/work/sama/feeder/](https://raghavkohli.xyz/work/sama/feeder/) is built: the
+site copies these three files in with its .
 
-Inside a frame, a page trims its top padding and reports its height to the parent.
+The standalone pages also work inside an . Framed, a page trims its top padding and posts its
+height to the parent as .

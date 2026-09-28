@@ -1,12 +1,15 @@
-// The ABM page. Everything shown is a lookup into results.json, which the Python sweep wrote;
+// The ABM essay. Everything shown is a lookup into results.json, which the Python sweep wrote;
 // no model runs in the browser. Every sentence that states a finding is written from the numbers
 // of the setting on screen, so the text cannot drift from the figures.
+//
+// mount(root, { results, links, stickyUnder }) renders the essay into `root`, which carries the
+// class .sama-abm (see abm.css). One instance per page: ids inside are fixed.
 import * as Plot from "@observablehq/plot";
-import resultsUrl from "./results.json?url";
-import { reportHeight } from "../../shared/embed.js";
+import { essay } from "./essay.js";
 
-const $ = (id) => document.getElementById(id);
-const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+let ROOT = document.documentElement;
+const $ = (id) => ROOT.querySelector("#" + id);
+const css = (name) => getComputedStyle(ROOT).getPropertyValue(name).trim();
 
 const pct = (x, d = 0) => `${(100 * x).toFixed(d)}%`;
 const rs = (x, d = 0) => `₹${Number(x).toLocaleString("en-IN", { minimumFractionDigits: d, maximumFractionDigits: d })}`;
@@ -24,15 +27,15 @@ const B = () => R.B[S.pen][S.ceil][S.act];
 const g = () => R.meta.grid;
 
 function colors() {
-  return { discom: css("--s-discom"), p2p: css("--s-p2p"), curtail: css("--s-curtail"),
-           ink: css("--ink"), soft: css("--ink-soft"), mute: css("--mute"), grid: css("--grid"),
+  return { discom: css("--sa-discom"), p2p: css("--sa-p2p"), curtail: css("--sa-curtail"),
+           ink: css("--ink"), soft: css("--ink-soft"), mute: css("--mute"), grid: css("--sa-grid"),
            line: css("--line"), paper: css("--paper") };
 }
 
 function width(el) { return Math.max(280, Math.round(el.clientWidth || 680)); }
 
 function style() {
-  return { fontFamily: css("--sans"), fontSize: "12px", color: css("--mute"), background: "transparent", overflow: "visible" };
+  return { fontFamily: css("--sa-sans"), fontSize: "12px", color: css("--mute"), background: "transparent", overflow: "visible" };
 }
 
 function legend(el, items) {
@@ -45,7 +48,7 @@ function table(el, head, rows) {
     rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
 
-function mount(el, node) { el.replaceChildren(node); }
+function put(el, node) { el.replaceChildren(node); }
 
 // --- 00 the answer ---------------------------------------------------------------------------
 
@@ -84,7 +87,7 @@ function fig1(c) {
   legend($("leg-1"), kinds.map(([, l, col]) => [l, col]));
   const W = width($("fig-1"));
   const vis = rows.filter((r) => r.share > 0);
-  mount($("fig-1"), Plot.plot({
+  put($("fig-1"), Plot.plot({
     width: W, height: 118, marginLeft: 84, marginRight: 8, marginTop: 6, marginBottom: 26, style: style(),
     x: { domain: [0, 1], tickFormat: (d) => pct(d), ticks: 5, label: null },
     y: { domain: ["A · opaque", "B · visible"], label: null, padding: 0.35 },
@@ -132,7 +135,7 @@ function fig2(c) {
   legend($("leg-2"), [["regime A · opaque", c.discom], ["regime B · visible", c.p2p]]);
   const W = width($("fig-2"));
   const xmax = Math.max(...b.strip, ...a.strip);
-  mount($("fig-2"), Plot.plot({
+  put($("fig-2"), Plot.plot({
     width: W, height: 250, marginLeft: 84, marginRight: 12, marginTop: 20, marginBottom: 32, style: style(),
     x: { domain: [0, xmax * 1.02], label: "₹ per week →", labelAnchor: "right", tickFormat: (d) => `₹${d}`, ticks: W > 520 ? 6 : 4 },
     y: { domain: [-0.5, 0.5], axis: null },
@@ -166,7 +169,7 @@ function fig2(c) {
   // 2b: the gain by system size
   const gain = b.strip.map((v, i) => ({ kw: kw[i], d: v - a.strip[i] }));
   const traded = gain.filter((x) => x.d > 0.5);
-  mount($("fig-2b"), Plot.plot({
+  put($("fig-2b"), Plot.plot({
     width: W, height: 232, marginLeft: 52, marginRight: 12, marginTop: 30, marginBottom: 32, style: style(),
     x: { label: "rooftop system, kW →", labelAnchor: "right", ticks: W > 520 ? 6 : 4 },
     y: { label: "↑ ₹ gained per week", labelAnchor: "top", tickFormat: (d) => `₹${d}`, ticks: 5, grid: false },
@@ -198,7 +201,7 @@ function fig3(c) {
   const showLim = peak > 0.55 * lim;
   legend($("leg-3"), [["regime A · opaque", c.discom, "line"], ["regime B · visible", c.p2p, "line"]]);
   const W = width($("fig-3"));
-  mount($("fig-3"), Plot.plot({
+  put($("fig-3"), Plot.plot({
     width: W, height: 272, marginLeft: 52, marginRight: 12, marginTop: 30, marginBottom: 32, style: style(),
     x: { domain: [0, 23], ticks: [0, 6, 12, 18, 23], tickFormat: (h) => `${String(h).padStart(2, "0")}:00`, label: null },
     y: { label: "↑ kW exported", labelAnchor: "top", ticks: 5, domain: showLim ? [Math.min(...a.day, ...b.day), lim * 1.08] : undefined, nice: true },
@@ -232,7 +235,7 @@ function fig3(c) {
 
 function ramp(n) {
   // one hue, light to dark: the P2P ochre, stepped for magnitude (penetration)
-  const dark = css("color-scheme") === "dark";
+  const dark = css("--sa-dark") === "1";
   const [lo, hi] = dark ? ["#6B4A10", "#F0CC80"] : ["#E3C48A", "#5E3F07"];
   const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
   const [a, b] = [rgb(lo), rgb(hi)];
@@ -322,8 +325,28 @@ function render() {
   fig4(c);
 }
 
-async function main() {
-  R = await (await fetch(resultsUrl)).json();
+export const DEFAULT_LINKS = {
+  readme: "https://github.com/raghavk31/sama-lab/tree/main/abm#readme",
+  sama: "https://raghavkohli.xyz/work/sama/",
+};
+
+export async function mount(root, { results, links = DEFAULT_LINKS, stickyUnder } = {}) {
+  ROOT = root;
+  root.classList.add("sama-abm");
+  root.innerHTML = essay(links);
+  // Sit the sticky settings bar under the host's own sticky header, if it has one.
+  const bar = stickyUnder && document.querySelector(stickyUnder);
+  if (bar) {
+    const set = () => root.style.setProperty("--sa-sticky-top", bar.offsetHeight + "px");
+    set();
+    new ResizeObserver(set).observe(bar);
+  }
+  try {
+    R = typeof results === "string" ? await (await fetch(results)).json() : results;
+  } catch (e) {
+    $("answer").textContent = "The results file did not load. " + e.message;
+    throw e;
+  }
   const m = R.meta, G = m.grid;
   S.pen = G.pv_penetration.indexOf(m.default.pv_penetration);
   S.ceil = G.ceiling.indexOf(m.default.ceiling);
@@ -341,12 +364,6 @@ async function main() {
     if (first) return;
     clearTimeout(t);
     t = setTimeout(render, 120);
-  }).observe(document.querySelector(".page"));
+  }).observe(root);
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
-  reportHeight();
 }
-
-main().catch((e) => {
-  $("answer").textContent = "The results file did not load. " + e.message;
-  console.error(e);
-});

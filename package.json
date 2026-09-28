@@ -6,8 +6,9 @@
   "description": "Two instruments for Sama: a feeder ABM of rooftop solar prosumers, and a map of grid observability",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build && vite build -c vite.embed.config.js && node -e \"require('fs').copyFileSync('abm/src/results.json','dist/embed/results.json')\"",
+    "preview": "vite preview",
+    "build:embed": "vite build -c vite.embed.config.js"
   },
   "devDependencies": {
     "vite": "^8.3.1"

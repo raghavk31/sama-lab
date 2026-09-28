@@ -25,14 +25,14 @@
     --paper: #1A1917; --paper-2: #23221F; --ink: #ECEAE3; --ink-soft: #BDBBB2; --mute: #9A988F;
     --line: #4A4843; --grid: #2E2D29; --accent: #9DB0D8;
     --s-discom: #5F84D6; --s-p2p: #C08A1E; --s-curtail: #C25566;   /* validated on #1A1917 */
-    color-scheme: dark;
+    color-scheme: dark; --dark: 1;
   }
 }
 :root[data-theme="dark"] {
   --paper: #1A1917; --paper-2: #23221F; --ink: #ECEAE3; --ink-soft: #BDBBB2; --mute: #9A988F;
   --line: #4A4843; --grid: #2E2D29; --accent: #9DB0D8;
   --s-discom: #5F84D6; --s-p2p: #C08A1E; --s-curtail: #C25566;
-  color-scheme: dark;
+  color-scheme: dark; --dark: 1;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
