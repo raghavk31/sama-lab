@@ -32,15 +32,20 @@ The model and its sweep are documented in [abm/README.md](abm/README.md).
 
 ## Embedding
 
- also writes the ABM essay as one script and one stylesheet with stable names, in
- (published at ). A host page supplies its own
+`npm run build` also writes the ABM essay as one script and one stylesheet with stable names, in
+`dist/embed/` (published at `https://raghavk31.github.io/sama-lab/embed/`). A host page supplies its own
 title and loads them:
 
-\
-The styles are scoped to  and take the host's colour tokens (, , ...)
-where it has them.  names the host's sticky header, so the settings bar docks below it.
-This is how [raghavkohli.xyz/work/sama/feeder/](https://raghavkohli.xyz/work/sama/feeder/) is built: the
-site copies these three files in with its .
+```html
+<link rel="stylesheet" href=".../embed/sama-abm.css">
+<div data-sama-abm data-results=".../embed/results.json" data-sticky-under=".head"></div>
+<script type="module" src=".../embed/sama-abm.js"></script>
+```
 
-The standalone pages also work inside an . Framed, a page trims its top padding and posts its
-height to the parent as .
+The styles are scoped to `.sama-abm` and take the host's colour tokens (`--ink`, `--paper`, ...) where
+it has them. `data-sticky-under` names the host's sticky header, so the settings bar docks below it.
+This is how [raghavkohli.xyz/work/sama/feeder/](https://raghavkohli.xyz/work/sama/feeder/) is built: the
+site copies these three files in with its `scripts/sync-sama-lab.py`.
+
+The standalone pages also work inside an `<iframe>`. Framed, a page trims its top padding and posts its
+height to the parent as `{type: "sama-lab:height", height}`.
